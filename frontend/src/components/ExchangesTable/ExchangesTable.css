@@ -1,0 +1,120 @@
+.exchanges-table-wrapper {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.exchanges-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.exchanges-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+/* Encabezados */
+.exchanges-table thead tr {
+  background: var(--bg-card-alt);
+  border-bottom: 1px solid var(--border);
+}
+
+.exchanges-table th {
+  padding: 13px 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* Filas */
+.exchanges-table td {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  color: var(--text-h);
+}
+
+.exchanges-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.exchanges-table tbody tr:hover td {
+  background: var(--bg-card-alt);
+}
+
+/* Celda exchange name */
+.cell-exchange {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.exchange-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--accent-green-muted);
+  border: 1px solid var(--accent-green-border);
+  color: var(--accent-green);
+  font-weight: 800;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.exchange-name {
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+/* Precios */
+.cell-compra {
+  color: var(--accent-green) !important;
+  font-weight: 700;
+  font-family: var(--mono);
+}
+
+.cell-venta {
+  color: var(--accent-red) !important;
+  font-weight: 700;
+  font-family: var(--mono);
+}
+
+.cell-na {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* Botón acción */
+.btn-exchange {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 7px;
+  background: var(--accent-green-muted);
+  border: 1px solid var(--accent-green-border);
+  color: var(--accent-green);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background .15s, filter .15s;
+}
+.btn-exchange:hover {
+  background: rgba(0, 195, 125, 0.25);
+  text-decoration: none;
+}
+
+.exchanges-empty {
+  padding: 32px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}

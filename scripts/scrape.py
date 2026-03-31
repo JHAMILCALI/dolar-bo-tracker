@@ -91,6 +91,9 @@ VENTA_PATTERNS: list[str] = [
 MIN_PRICE: float = 5.0
 MAX_PRICE: float = 20.0
 
+# Exchanges conocidos en Bolivia para búsqueda por proximidad
+EXCHANGE_NAMES: list[str] = ["Binance", "Bybit", "Bitget", "DoradoP2P", "Airtm"]
+
 
 # ---------------------------------------------------------------------------
 # Fetch con Playwright (necesario: la web carga los precios via JavaScript)
@@ -307,8 +310,145 @@ def extract_prices(html: str) -> tuple[float, float]:
 
 
 # ---------------------------------------------------------------------------
-# Base de datos JSON
+# Extracción de tabla "Comparativa de Exchanges"
 # ---------------------------------------------------------------------------
+
+def _parse_exchange_table(table: Any) -> list[dict[str, Any]]:
+    """Parsea un elemento <table> de BeautifulSoup buscando nombre/compra/venta."""
+    results: list[dict[str, Any]] = []
+    headers: list[str] = []
+
+    thead = table.find("thead")
+    if thead:
+        headers = [c.get_text(strip=True).lower() for c in thead.find_all(["th", "td"])]
+    else:
+        first_row = table.find("tr")
+        if first_row:
+            headers = [c.get_text(strip=True).lower() for c in first_row.find_all(["th", "td"])]
+
+    name_idx   = next((i for i, h in enumerate(headers) if "exchange" in h or "nombre" in h), 0)
+    compra_idx = next((i for i, h in enumerate(headers) if "compra" in h), 1)
+    venta_idx  = next((i for i, h in enumerate(headers) if "venta" in h), 2)
+
+    tbody = table.find("tbody")
+    rows  = tbody.find_all("tr") if tbody else table.find_all("tr")[1:]
+
+    for row in rows:
+        cells = row.find_all(["td", "th"])
+        if len(cells) <= max(compra_idx, venta_idx):
+            continue
+
+        name = re.sub(r"\s+", " ", cells[name_idx].get_text(strip=True)).strip() if name_idx < len(cells) else ""
+        if not name:
+            continue
+
+        def _safe_price(idx: int) -> float | None:
+            if idx >= len(cells):
+                return None
+            raw = re.sub(r"[^0-9.,]", "", cells[idx].get_text(strip=True))
+            val = parse_decimal(raw)
+            return val if val is not None and MIN_PRICE <= val <= MAX_PRICE else None
+
+        url: str | None = None
+        for cell in cells:
+            link = cell.find("a", href=True)
+            if link:
+                url = link.get("href")
+                break
+
+        results.append({
+            "name":   name,
+            "compra": _safe_price(compra_idx),
+            "venta":  _safe_price(venta_idx),
+            "url":    url,
+        })
+
+    return results
+
+
+def _extract_exchanges_by_proximity(soup: BeautifulSoup) -> list[dict[str, Any]]:
+    """
+    Fallback: recorre el DOM buscando los nombres conocidos de exchanges
+    y extrae los precios de compra/venta del contenedor más cercano.
+    """
+    results: list[dict[str, Any]] = []
+    found_names: set[str] = set()
+
+    for xname in EXCHANGE_NAMES:
+        pattern = re.compile(re.escape(xname), re.IGNORECASE)
+        for elem in soup.find_all(string=pattern):
+            parent = elem.parent
+            if parent is None:
+                continue
+            # Sube hasta 3 niveles para abarcar el bloque del exchange
+            container = parent
+            for _ in range(3):
+                if container.parent:
+                    container = container.parent
+                else:
+                    break
+
+            container_text = container.get_text(" ", strip=True)
+            numbers = re.findall(r"[\d]+[.,][\d]+", container_text)
+            valid_prices = [
+                v for n in numbers
+                if (v := parse_decimal(n)) is not None and MIN_PRICE <= v <= MAX_PRICE
+            ]
+
+            if len(valid_prices) >= 2 and xname not in found_names:
+                found_names.add(xname)
+                link = container.find("a", href=True)
+                results.append({
+                    "name":   xname,
+                    "compra": valid_prices[0],
+                    "venta":  valid_prices[1],
+                    "url":    link.get("href") if link else None,
+                })
+                break
+
+    return results
+
+
+def extract_exchanges(html: str) -> list[dict[str, Any]]:
+    """
+    Extrae la tabla 'Comparativa de Exchanges' de la página.
+    Retorna lista de dicts: [{name, compra, venta, url}]
+    No lanza excepción — los datos de exchanges son opcionales.
+    """
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+
+        # Estrategia 1: encabezado "Comparativa de Exchanges" → siguiente <table>
+        for tag in soup.find_all(["h2", "h3", "h4", "p", "div"]):
+            if re.search(r"comparativa\s+de\s+exchanges?", tag.get_text(), re.IGNORECASE):
+                table = tag.find_next("table")
+                if table:
+                    results = _parse_exchange_table(table)
+                    if results:
+                        log.info("Exchanges (tabla comparativa): %d filas", len(results))
+                        return results
+                break
+
+        # Estrategia 2: cualquier tabla que tenga columnas compra + venta
+        for table in soup.find_all("table"):
+            text = table.get_text().lower()
+            if "compra" in text and "venta" in text:
+                results = _parse_exchange_table(table)
+                if results and len(results) >= 2:
+                    log.info("Exchanges (tabla genérica): %d filas", len(results))
+                    return results
+
+        # Estrategia 3: proximidad por nombre de exchange conocido
+        results = _extract_exchanges_by_proximity(soup)
+        if results:
+            log.info("Exchanges (proximidad DOM): %d", len(results))
+        else:
+            log.warning("Exchanges no encontrados — db.json se guardará sin ese campo.")
+        return results
+
+    except Exception as exc:  # noqa: BLE001
+        log.warning("Error extrayendo exchanges (no crítico): %s", exc)
+        return []
 
 def load_db(path: Path) -> dict[str, Any]:
     """Carga el archivo db.json o devuelve una estructura vacía válida."""
@@ -360,8 +500,13 @@ def is_duplicate(records: list[dict[str, Any]], compra: float, venta: float) -> 
     return False
 
 
-def append_record(db: dict[str, Any], compra: float, venta: float) -> dict[str, Any]:
-    """Añade un nuevo registro al historial y actualiza lastUpdated y source."""
+def append_record(
+    db: dict[str, Any],
+    compra: float,
+    venta: float,
+    exchanges: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Añade un nuevo registro al historial, actualiza exchanges, lastUpdated y source."""
     now_iso = datetime.now(timezone.utc).isoformat()
 
     new_record: dict[str, Any] = {
@@ -375,8 +520,13 @@ def append_record(db: dict[str, Any], compra: float, venta: float) -> dict[str, 
     db["lastUpdated"] = now_iso
     db["source"] = URL
 
+    if exchanges is not None:
+        db["exchanges"] = exchanges
+
     log.info("Nuevo registro añadido: %s", json.dumps(new_record, ensure_ascii=False))
     log.info("Total de registros en historial: %d", len(db["records"]))
+    if exchanges:
+        log.info("Exchanges guardados: %s", ", ".join(e.get("name", "?") for e in exchanges))
     return db
 
 
@@ -402,19 +552,22 @@ def main() -> None:
         # 1. Descargar la página
         html = fetch_page(URL)
 
-        # 2. Extraer precios
+        # 2. Extraer precios principales
         compra, venta = extract_prices(html)
 
-        # 3. Cargar el historial existente
+        # 3. Extraer tabla de exchanges (best-effort, no crítico)
+        exchanges = extract_exchanges(html)
+
+        # 4. Cargar el historial existente
         db = load_db(DB_PATH)
 
-        # 4. Verificar duplicado antes de escribir
+        # 5. Verificar duplicado antes de escribir
         if is_duplicate(db.get("records", []), compra, venta):
             log.info("No se realizaron cambios en db.json.")
             sys.exit(0)
 
-        # 5. Agregar nuevo registro y guardar
-        db = append_record(db, compra, venta)
+        # 6. Agregar nuevo registro y guardar
+        db = append_record(db, compra, venta, exchanges)
         save_db(DB_PATH, db)
 
         log.info("=== Scraping completado exitosamente ===")

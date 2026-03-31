@@ -1,5 +1,235 @@
-/* ── Layout principal ───────────────────────────────── */
+/* ═══════════════════════════════════════════════════════
+   App Layout — Dólar Bolivia Hoy (dark theme)
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Contenedor raíz ─────────────────────────────────── */
 .app {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+/* ── Barra de navegación ─────────────────────────────── */
+.app-nav {
+  background: var(--bg-nav);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.nav-logo {
+  width: 32px;
+  height: 32px;
+  background: var(--accent-green);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #000;
+  flex-shrink: 0;
+}
+
+.nav-sitename {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-h);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-links a {
+  font-size: 0.78rem;
+  color: var(--text);
+  text-decoration: none;
+  transition: color .15s;
+}
+.nav-links a:hover { color: var(--accent-green); }
+
+.btn-refresh {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 7px;
+  border: 1px solid var(--border-mid);
+  background: var(--bg-card);
+  color: var(--text-h);
+  cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+.btn-refresh:hover {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+}
+
+@media (max-width: 600px) {
+  .nav-links { display: none; }
+}
+
+/* ── Área principal ──────────────────────────────────── */
+.app-main {
+  flex: 1;
+  padding: 0 24px 48px;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* ── Hero / cabecera de sección ─────────────────────── */
+.hero {
+  padding: 36px 0 0;
+  text-align: center;
+}
+
+.hero__title {
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+  font-weight: 700;
+  color: var(--text-h);
+  margin-bottom: 6px;
+}
+
+.hero__sub {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.hero__updated {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+.hero__updated strong { color: var(--text); }
+
+/* ── Tarjetas hero (Compra / Venta) ──────────────────── */
+.section-hero-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+@media (max-width: 480px) {
+  .section-hero-cards { grid-template-columns: 1fr; }
+}
+
+/* ── Grid de exchange mini-cards ─────────────────────── */
+.section-exchange-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+/* ── Título de sección ───────────────────────────────── */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-h);
+  letter-spacing: -0.01em;
+}
+
+.section-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  padding: 3px 10px;
+  border: 1px solid var(--border-mid);
+  border-radius: 999px;
+}
+
+/* ── Estados (loading / error / empty) ───────────────── */
+.state-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.state-box--loading { color: var(--text); }
+
+.state-box--error {
+  background: var(--accent-red-muted);
+  border-color: var(--accent-red-border);
+  color: var(--accent-red);
+  flex-wrap: wrap;
+}
+
+.state-box--empty { color: var(--text); justify-content: center; }
+
+.btn-retry {
+  margin-left: auto;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--accent-red-border);
+  background: var(--accent-red-muted);
+  color: var(--accent-red);
+  cursor: pointer;
+}
+.btn-retry:hover { filter: brightness(1.2); }
+
+/* ── Spinner ─────────────────────────────────────────── */
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border-mid);
+  border-top-color: var(--accent-green);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Footer ──────────────────────────────────────────── */
+.app-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+.app-footer a { color: var(--accent-green); }
+.app-footer a:hover { text-decoration: underline; }
+
   min-height: 100svh;
   display: flex;
   flex-direction: column;

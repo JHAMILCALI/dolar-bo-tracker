@@ -1,76 +1,115 @@
+/* ── Tarjeta hero (Compra / Venta principal) ─────────── */
 .price-card {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 24px 28px;
-  box-shadow: var(--shadow);
+  border-radius: 14px;
+  padding: 28px 28px 22px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   text-align: left;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border: 1px solid var(--border);
+  transition: transform .15s;
 }
-
-.price-card:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    rgba(0, 0, 0, 0.12) 0 16px 24px -4px,
-    rgba(0, 0, 0, 0.06) 0 6px 10px -2px;
-}
+.price-card:hover { transform: translateY(-2px); }
 
 .price-card--compra {
-  border-top: 3px solid #16a34a;
+  background: var(--accent-green-muted);
+  border-color: var(--accent-green-border);
 }
-
 .price-card--venta {
-  border-top: 3px solid #dc2626;
+  background: var(--accent-red-muted);
+  border-color: var(--accent-red-border);
+}
+.price-card--neutral {
+  background: var(--bg-card);
 }
 
 .price-card__header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.price-card__icon {
-  font-size: 1rem;
-  line-height: 1;
-}
-
 .price-card__label {
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: 0.82rem;
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--text);
   margin: 0;
-  flex: 1;
 }
+.price-card--compra .price-card__label { color: var(--accent-green); }
+.price-card--venta  .price-card__label { color: var(--accent-red); }
+.price-card--neutral .price-card__label { color: var(--text); }
 
 .price-card__value {
-  font-size: 2.4rem;
-  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-weight: 800;
   color: var(--text-h);
-  margin: 4px 0 0;
-  letter-spacing: -0.02em;
+  margin: 0;
+  letter-spacing: -0.03em;
   line-height: 1;
 }
 
 .price-card__prev {
-  font-size: 0.8rem;
-  color: var(--text);
+  font-size: 0.78rem;
+  color: var(--text-muted);
   margin: 0;
 }
-
-.price-card__prev span {
-  font-weight: 600;
-}
+.price-card__prev span { color: var(--text); font-weight: 600; }
 
 .price-card__sub {
-  font-size: 0.75rem;
-  color: var(--text);
-  opacity: 0.6;
+  font-size: 0.72rem;
+  color: var(--text-muted);
   margin: 0;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
 }
+
+/* ── Exchange mini card ──────────────────────────────── */
+.exchange-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color .15s;
+}
+.exchange-card:hover { border-color: var(--border-mid); }
+
+.exchange-card__name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.exchange-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.exchange-card__lbl {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.exchange-card__price {
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: var(--mono);
+}
+.exchange-card__price--compra { color: var(--accent-green); }
+.exchange-card__price--venta  { color: var(--accent-red); }
+
+.exchange-card__link {
+  font-size: 0.72rem;
+  color: var(--accent-green);
+  text-decoration: none;
+  margin-top: 4px;
+}
+.exchange-card__link:hover { text-decoration: underline; }
