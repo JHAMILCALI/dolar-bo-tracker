@@ -1,9 +1,195 @@
-.price-chart {
+/* ── Wrapper exterior ───────────────────────────────────────── */
+.hchart-wrapper {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 24px 24px 16px;
+  padding: 28px 28px 20px;
 }
+
+.hchart-empty,
+.hchart-no-data {
+  text-align: center;
+  padding: 48px 0;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+/* ── Título principal ───────────────────────────────────────── */
+.hchart-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-h);
+  text-align: center;
+  margin: 0 0 16px;
+}
+
+/* ── Toggle compra / venta ──────────────────────────────────── */
+.hchart-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.hchart-toggle-btn {
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #2a2d2b;
+  color: var(--text-h);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.hchart-toggle-btn:hover {
+  background: #3a3d3b;
+}
+
+.hchart-toggle-btn.active {
+  background: var(--accent-green);
+  border-color: var(--accent-green);
+  color: #fff;
+}
+
+/* ── Panel oscuro interior ──────────────────────────────────── */
+.hchart-panel {
+  background: #111827;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.hchart-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.hchart-panel-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.hchart-download-btn {
+  padding: 7px 16px;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent-green);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.hchart-download-btn:hover {
+  background: #00a855;
+}
+
+/* ── Controles: rango fecha + radios ────────────────────────── */
+.hchart-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.hchart-daterange {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.hchart-daterange-label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #ccc;
+  white-space: nowrap;
+}
+
+.hchart-daterange-input {
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  padding: 6px 12px;
+  color: #fff;
+  font-size: 0.82rem;
+  flex: 1;
+  min-width: 0;
+  outline: none;
+  cursor: default;
+}
+
+/* ── Radio buttons ──────────────────────────────────────────── */
+.hchart-radios {
+  display: flex;
+  gap: 4px;
+}
+
+.hchart-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #ccc;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: background 0.12s;
+}
+
+.hchart-radio-label:hover {
+  background: #1f2937;
+}
+
+.hchart-radio-input {
+  accent-color: var(--accent-green);
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+
+/* ── Contenedor del SVG ─────────────────────────────────────── */
+.hchart-svg-container {
+  background: #111827;
+  border-radius: 10px;
+  overflow: hidden;
+  contain: layout;
+}
+
+.hchart-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: crosshair;
+  overflow: visible;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .hchart-wrapper {
+    padding: 16px 12px 12px;
+  }
+  .hchart-panel {
+    padding: 14px 10px;
+  }
+  .hchart-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .hchart-daterange {
+    width: 100%;
+  }
+}
+
 
 .chart-header {
   display: flex;
