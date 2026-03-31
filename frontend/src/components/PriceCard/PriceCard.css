@@ -1,0 +1,76 @@
+.price-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px 28px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.price-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    rgba(0, 0, 0, 0.12) 0 16px 24px -4px,
+    rgba(0, 0, 0, 0.06) 0 6px 10px -2px;
+}
+
+.price-card--compra {
+  border-top: 3px solid #16a34a;
+}
+
+.price-card--venta {
+  border-top: 3px solid #dc2626;
+}
+
+.price-card__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.price-card__icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.price-card__label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin: 0;
+  flex: 1;
+}
+
+.price-card__value {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--text-h);
+  margin: 4px 0 0;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.price-card__prev {
+  font-size: 0.8rem;
+  color: var(--text);
+  margin: 0;
+}
+
+.price-card__prev span {
+  font-weight: 600;
+}
+
+.price-card__sub {
+  font-size: 0.75rem;
+  color: var(--text);
+  opacity: 0.6;
+  margin: 0;
+  letter-spacing: 0.04em;
+}
