@@ -1,0 +1,9 @@
+# Dependencias de scraping — instalar con:
+#   pip install -r scripts/requirements.txt
+#   playwright install chromium
+
+beautifulsoup4>=4.12.0
+lxml>=5.0.0          # Parser HTML más rápido para BeautifulSoup
+
+# Playwright: necesario porque dolarboliviahoy.com carga precios via JavaScript
+playwright>=1.44.0
