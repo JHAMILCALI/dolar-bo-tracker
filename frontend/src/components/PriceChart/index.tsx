@@ -3,7 +3,7 @@ import type { DollarRecord } from '../../types';
 import './PriceChart.css';
 
 type PriceType = 'compra' | 'venta';
-type RangeType  = 'week' | 'month' | 'year';
+type RangeType  = 'day' | 'week' | 'month' | 'year';
 
 interface PriceChartProps {
   records: DollarRecord[];
@@ -21,12 +21,45 @@ const GREEN = '#00c368';
 // ── Utilidades ──────────────────────────────────────────────
 function filterByRange(records: DollarRecord[], range: RangeType): DollarRecord[] {
   if (records.length === 0) return records;
-  const now = new Date();
-  const cutoff = new Date(now);
-  if      (range === 'week')  cutoff.setDate(now.getDate() - 7);
-  else if (range === 'month') cutoff.setMonth(now.getMonth() - 1);
-  else                        cutoff.setFullYear(now.getFullYear() - 1);
+  if (range === 'day') {
+    // Mostrar todos los registros del día más reciente de la BD
+    const lastDate = new Date(records[records.length - 1].timestamp);
+    const dayStart = new Date(lastDate.getFullYear(), lastDate.getMonth(), lastDate.getDate(), 0, 0, 0, 0);
+    const dayEnd   = new Date(lastDate.getFullYear(), lastDate.getMonth(), lastDate.getDate(), 23, 59, 59, 999);
+    return records.filter((r) => {
+      const d = new Date(r.timestamp);
+      return d >= dayStart && d <= dayEnd;
+    });
+  }
+  // Usar el último registro de la BD como referencia, no la fecha actual
+  const last   = new Date(records[records.length - 1].timestamp);
+  const cutoff = new Date(last);
+  if      (range === 'week')  cutoff.setDate(last.getDate() - 7);
+  else if (range === 'month') cutoff.setMonth(last.getMonth() - 1);
+  else                        cutoff.setFullYear(last.getFullYear() - 1);
   return records.filter((r) => new Date(r.timestamp) >= cutoff);
+}
+
+// Agrupa registros por día calendario y devuelve un registro promedio por día
+function aggregateByDay(records: DollarRecord[]): DollarRecord[] {
+  const map = new Map<string, DollarRecord[]>();
+  for (const r of records) {
+    const d = new Date(r.timestamp);
+    const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    if (!map.has(key)) map.set(key, []);
+    map.get(key)!.push(r);
+  }
+  return Array.from(map.entries()).map(([, group]) => {
+    const avg = (vals: number[]) => Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 100) / 100;
+    // Usar la medianoche del día como timestamp representativo
+    const d = new Date(group[0].timestamp);
+    const dayTs = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0).toISOString();
+    return {
+      timestamp: dayTs,
+      compra: avg(group.map((r) => r.compra)),
+      venta:  avg(group.map((r) => r.venta)),
+    };
+  });
 }
 
 function fmtAxisDate(ts: string): string {
@@ -34,11 +67,21 @@ function fmtAxisDate(ts: string): string {
   return `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`;
 }
 
-function fmtRangeDisplay(records: DollarRecord[]): string {
+function fmtAxisTime(ts: string): string {
+  const d = new Date(ts);
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
+function fmtRangeDisplay(records: DollarRecord[], range: RangeType): string {
   if (records.length === 0) return 'Sin datos';
-  const fmt = (d: Date) =>
+  const fmtDate = (d: Date) =>
     `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-  return `${fmt(new Date(records[0].timestamp))} - ${fmt(new Date(records[records.length - 1].timestamp))}`;
+  const fmtDateTime = (d: Date) =>
+    `${fmtDate(d)} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  if (range === 'day') {
+    return `${fmtDateTime(new Date(records[0].timestamp))} - ${fmtDateTime(new Date(records[records.length - 1].timestamp))}`;
+  }
+  return `${fmtDate(new Date(records[0].timestamp))} - ${fmtDate(new Date(records[records.length - 1].timestamp))}`;
 }
 
 function downloadCSV(records: DollarRecord[], type: PriceType): void {
@@ -55,7 +98,7 @@ function downloadCSV(records: DollarRecord[], type: PriceType): void {
 // ── Componente ──────────────────────────────────────────────
 export function PriceChart({ records }: PriceChartProps) {
   const [priceType, setPriceType] = useState<PriceType>('compra');
-  const [range,     setRange]     = useState<RangeType>('month');
+  const [range,     setRange]     = useState<RangeType>('day');
   const [tooltip,   setTooltip]   = useState<{ x: number; y: number; value: number; date: string } | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
 
@@ -64,8 +107,10 @@ export function PriceChart({ records }: PriceChartProps) {
   }
 
   const filtered = filterByRange(records, range);
-  const values   = filtered.map((r) => (priceType === 'compra' ? r.compra : r.venta));
-  const n        = filtered.length;
+  // Para semana/mes/año: agrupar por día y promediar los registros de 2h
+  const chartData = range === 'day' ? filtered : aggregateByDay(filtered);
+  const values   = chartData.map((r) => (priceType === 'compra' ? r.compra : r.venta));
+  const n        = chartData.length;
 
   // ── Escala Y ───────────────────────────────────────────────
   const rawMin   = n ? Math.min(...values) : 0;
@@ -107,7 +152,8 @@ export function PriceChart({ records }: PriceChartProps) {
       if (dx < bestDist) { bestDist = dx; best = i; }
     }
     if (bestDist < 40) {
-      setTooltip({ x: toX(best), y: toY(values[best]), value: values[best], date: fmtAxisDate(filtered[best].timestamp) });
+      const dateFmt = range === 'day' ? fmtAxisTime(chartData[best].timestamp) : fmtAxisDate(chartData[best].timestamp);
+      setTooltip({ x: toX(best), y: toY(values[best]), value: values[best], date: dateFmt });
     } else {
       setTooltip(null);
     }
@@ -152,11 +198,11 @@ export function PriceChart({ records }: PriceChartProps) {
               className="hchart-daterange-input"
               type="text"
               readOnly
-              value={fmtRangeDisplay(filtered)}
+              value={fmtRangeDisplay(filtered, range)}
             />
           </div>
           <div className="hchart-radios">
-            {(['week', 'month', 'year'] as RangeType[]).map((r) => (
+            {(['day', 'week', 'month', 'year'] as RangeType[]).map((r) => (
               <label key={r} className="hchart-radio-label">
                 <input
                   type="radio"
@@ -166,7 +212,7 @@ export function PriceChart({ records }: PriceChartProps) {
                   onChange={() => setRange(r)}
                   className="hchart-radio-input"
                 />
-                {r === 'week' ? 'Semana' : r === 'month' ? 'Mes' : 'Año'}
+                {r === 'day' ? 'Día' : r === 'week' ? 'Semana' : r === 'month' ? 'Mes' : 'Año'}
               </label>
             ))}
           </div>
@@ -212,7 +258,7 @@ export function PriceChart({ records }: PriceChartProps) {
                     transform="translate(0,10) rotate(-45)"
                     fill="#fff" fontSize="11" fontFamily="sans-serif"
                   >
-                    {fmtAxisDate(filtered[i].timestamp)}
+                    {range === 'day' ? fmtAxisTime(chartData[i].timestamp) : fmtAxisDate(chartData[i].timestamp)}
                   </text>
                 </g>
               ))}
