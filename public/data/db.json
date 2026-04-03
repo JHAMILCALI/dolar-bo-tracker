@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-03T07:02:51.756932+00:00",
+  "lastUpdated": "2026-04-03T08:46:55.047614+00:00",
   "source": "https://dolarboliviahoy.com/",
   "records": [
     {
@@ -311,6 +311,11 @@
       "timestamp": "2026-04-03T07:02:51.756932+00:00",
       "compra": 9.5,
       "venta": 9.29
+    },
+    {
+      "timestamp": "2026-04-03T08:46:55.047614+00:00",
+      "compra": 9.53,
+      "venta": 9.29
     }
   ],
   "exchanges": [
@@ -322,14 +327,14 @@
     },
     {
       "name": "Bybit",
-      "compra": 9.35,
-      "venta": 9.27,
+      "compra": 9.34,
+      "venta": 9.28,
       "url": "https://bit.ly/bybitdolarboliviatabla"
     },
     {
       "name": "Bitget",
       "compra": 9.34,
-      "venta": 9.27,
+      "venta": 9.25,
       "url": "https://bit.ly/bitgetpartnerdolarboliviahoytabla"
     },
     {
@@ -340,14 +345,14 @@
     },
     {
       "name": "DoradoP2P",
-      "compra": 9.36,
+      "compra": 9.37,
       "venta": 9.23,
       "url": "https://bit.ly/dolarboliviaeldorado"
     },
     {
       "name": "Airtm",
-      "compra": 9.5,
-      "venta": 9.07,
+      "compra": 9.53,
+      "venta": 9.08,
       "url": "https://bit.ly/dolarboliviaairtm"
     }
   ]
