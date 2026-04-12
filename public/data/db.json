@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-12T08:41:52.270691+00:00",
+  "lastUpdated": "2026-04-12T10:34:57.122739+00:00",
   "source": "https://dolarboliviahoy.com/",
   "records": [
     {
@@ -811,31 +811,36 @@
       "timestamp": "2026-04-12T08:41:52.270691+00:00",
       "compra": 9.48,
       "venta": 9.28
+    },
+    {
+      "timestamp": "2026-04-12T10:34:57.122739+00:00",
+      "compra": 9.48,
+      "venta": 9.29
     }
   ],
   "exchanges": [
     {
       "name": "Binance",
       "compra": 9.33,
-      "venta": 9.28,
+      "venta": 9.29,
       "url": "https://bit.ly/binancedolarboliviatabla"
     },
     {
       "name": "Bybit",
       "compra": 9.31,
-      "venta": 9.28,
+      "venta": 9.29,
       "url": "https://bit.ly/bybitdolarboliviatabla"
     },
     {
       "name": "Bitget",
-      "compra": 9.34,
-      "venta": null,
+      "compra": 9.33,
+      "venta": 9.29,
       "url": "https://bit.ly/bitgetpartnerdolarboliviahoytabla"
     },
     {
       "name": "SaldoAR",
       "compra": 9.37,
-      "venta": 9.16,
+      "venta": 9.19,
       "url": "https://bit.ly/dolarboliviahoysaldoar"
     },
     {
