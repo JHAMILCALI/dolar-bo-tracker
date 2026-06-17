@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-17T00:47:37.576311+00:00",
+  "lastUpdated": "2026-06-17T03:09:12.256358+00:00",
   "source": "https://dolarboliviahoy.com/",
   "records": [
     {
@@ -3871,6 +3871,11 @@
       "timestamp": "2026-06-17T00:47:37.576311+00:00",
       "compra": 10.07,
       "venta": 9.88
+    },
+    {
+      "timestamp": "2026-06-17T03:09:12.256358+00:00",
+      "compra": 10.07,
+      "venta": 9.88
     }
   ],
   "exchanges": [
@@ -3888,7 +3893,7 @@
     },
     {
       "name": "Bitget",
-      "compra": 9.91,
+      "compra": 9.95,
       "venta": 9.85,
       "url": "https://bit.ly/bitgetpartnerdolarboliviahoytabla"
     },
@@ -3900,8 +3905,8 @@
     },
     {
       "name": "DoradoP2P",
-      "compra": 9.92,
-      "venta": 9.85,
+      "compra": 9.93,
+      "venta": 9.84,
       "url": "https://bit.ly/dolarboliviaeldorado"
     },
     {
