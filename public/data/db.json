@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-28T16:27:17.595288+00:00",
+  "lastUpdated": "2026-06-28T18:25:45.661674+00:00",
   "source": "https://dolarboliviahoy.com/",
   "records": [
     {
@@ -4561,13 +4561,18 @@
       "timestamp": "2026-06-28T16:27:17.595288+00:00",
       "compra": 10.01,
       "venta": 9.89
+    },
+    {
+      "timestamp": "2026-06-28T18:25:45.661674+00:00",
+      "compra": 9.99,
+      "venta": 9.89
     }
   ],
   "exchanges": [
     {
       "name": "Binance",
-      "compra": 9.92,
-      "venta": 9.89,
+      "compra": 9.9,
+      "venta": 9.86,
       "url": "https://bit.ly/binancedolarboliviatabla"
     },
     {
@@ -4578,38 +4583,38 @@
     },
     {
       "name": "Bitget",
-      "compra": 9.94,
+      "compra": 9.93,
       "venta": 9.88,
       "url": "https://bit.ly/bitgetpartnerdolarboliviahoytabla"
     },
     {
       "name": "SaldoAR",
       "compra": 10.07,
-      "venta": 9.85,
+      "venta": 9.86,
       "url": "https://bit.ly/dolarboliviahoysaldoar"
     },
     {
       "name": "DoradoP2P",
-      "compra": 9.97,
+      "compra": 9.95,
       "venta": 9.84,
       "url": "https://bit.ly/dolarboliviaeldorado"
     },
     {
       "name": "Airtm",
-      "compra": 10.11,
+      "compra": 10.09,
       "venta": 9.63,
       "url": "https://bit.ly/dolarboliviaairtm"
     },
     {
       "name": "Takenos",
-      "compra": 10.22,
-      "venta": 9.79,
+      "compra": 10.19,
+      "venta": 9.77,
       "url": "https://takenos.go.link/?adj_t=1ptq1hru&adj_label=veimarlala1"
     },
     {
       "name": "Wallbit",
-      "compra": 10.01,
-      "venta": 9.77,
+      "compra": 9.99,
+      "venta": 9.75,
       "url": "https://wallbit.io"
     }
   ]
