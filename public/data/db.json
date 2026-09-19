@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-19T16:58:48.851259+00:00",
+  "lastUpdated": "2026-09-19T19:56:08.338413+00:00",
   "source": "https://dolarboliviahoy.com/",
   "records": [
     {
@@ -8136,19 +8136,24 @@
       "timestamp": "2026-09-19T16:58:48.851259+00:00",
       "compra": 12.15,
       "venta": 11.0
+    },
+    {
+      "timestamp": "2026-09-19T19:56:08.338413+00:00",
+      "compra": 12.09,
+      "venta": 11.0
     }
   ],
   "exchanges": [
     {
       "name": "Compra",
       "compra": 11.1,
-      "venta": 11.99,
+      "venta": 11.94,
       "url": null
     },
     {
       "name": "Venta",
       "compra": 11.0,
-      "venta": 11.94,
+      "venta": 11.87,
       "url": null
     }
   ]
